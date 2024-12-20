@@ -1,6 +1,13 @@
 import * as yaml from "yaml";
 import { z } from "zod";
 
+const GeneralSchema = z.object({
+  author: z.optional(z.string()),
+  availableLanguages: z.optional(z.array(z.string())),
+  comment: z.optional(z.string()),
+  revision: z.optional(z.string()),
+});
+
 const WindowsFirewallSchema = z.object({
   action: z.enum(["allow", "block"]),
   direction: z.enum(["in", "out"]),
@@ -62,6 +69,7 @@ const StartSchema = z.object({
 
 const LaunchScriptSchema = z.object({
   game: StartSchema,
+  general: z.optional(GeneralSchema),
   server: z.optional(StartSchema),
   setup: z.optional(SetupSchema),
   version: z.literal(1),
@@ -77,6 +85,7 @@ export type StepRegistry = z.infer<typeof StepRegistrySchema>;
 export type WindowsStep = z.infer<typeof WindowsStepSchema>;
 export type Setup = z.infer<typeof SetupSchema>;
 export type Start = z.infer<typeof StartSchema>;
+export type General = z.infer<typeof GeneralSchema>;
 
 export const useLaunchScriptParser = () => {
   const parseObject = (config: object) => LaunchScriptSchema.parse(config);
